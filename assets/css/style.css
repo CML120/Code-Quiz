@@ -6,3 +6,7 @@ body {
   .timer{
     float: right;
   }
+
+  .hide {
+    display: none;
+}

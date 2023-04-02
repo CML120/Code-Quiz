@@ -1,48 +1,97 @@
-var timerEl = $('#timer');
-var startBtn = $('#start');
+var timerEl = document.querySelector("#timer");
+var startBtn = document.querySelector("#start");
+var saveScoreBtn = document.querySelector("#submit-score");
+var questionsEl = document.querySelector("#questions");
+var nameEl = document.querySelector("#name-input");
+var answersEl = document.querySelector("#answers")
+var responseEL = document.querySelector("#response")
+var scoreSaveEl = document.querySelector("#score-saved")
+var questionIndex = 0;
 
 //questions taken from https://www.w3schools.com/quiztest/quiztest.asp?qtest=JS
 var questions = [
     {
         prompt: "Inside which HTML element do we put the JavaScript?",
-        options: ["<scripting>", "<js>", "<javascript>", "<script>"],
+        choices: ["<scripting>", "<js>", "<javascript>", "<script>"],
         answer: "<script>"
     },
 
     {
         prompt: "How do you write Hello World in an alert box?",
-        options: ["alertBox(''Hello World'')", "msgBox(''Hello World'')", "msg(''Hello World'')", "alert(''Hello World'')"],
+        choices: ["alertBox(''Hello World'')", "msgBox(''Hello World'')", "msg(''Hello World'')", "alert(''Hello World'')"],
         answer: "alert(''Hello World'')"
     },
 
     {
         prompt: "How do you call a function named myFunction?",
-        options: ["call myFunction()", "myFunction()", "call function myFunction", ".myFunction{}"],
+        choices: ["call myFunction()", "myFunction()", "call function myFunction", ".myFunction{}"],
         answer: "myFunction()"
     },
 
     {
         prompt: "In JavaScript, which of the following is a logical operator?",
-        options: ["|", "&&", "%", "/"],
+        choices: ["|", "&&", "%", "/"],
         answer: "&&" 
     },
 
     {
         prompt: "Which event occurs when the user clicks on an HTML element?",
-        options: ["onmouseclick", "onmouseover", "onclick", "onchange"],
+        choices: ["onmouseclick", "onmouseover", "onclick", "onchange"],
         answer: "onclick"
     }];
 
 
-var timeLeft = questions.length * 20;
+var timeLeft = questions.length * 10;
 var timerStart;
 
 function startQuiz() {
-    timerStart = setInterval(clockTick, 1000);
+    timerStart = setInterval(timer, 1000);
     timerEl.textContent = timeLeft;
+    var startViewEL = document.querySelector("#starting");;
+    startViewEL.setAttribute("class", "hide");
+    questionsEl.removeAttribute("class");
+    generateQuestion();
 }
 
+function generateQuestion(){
+    var selectedQuestion = questions[questionIndex];
+    var questionEl = document.getElementById("question-text");
+    questionEl.textContent = selectedQuestion.prompt;
+    answersEl.innerHTML = "";
+    selectedQuestion.choices.forEach(function(choice, i) {
+        var answerBtn = document.createElement("button");
+        answerBtn.setAttribute("value", choice);
+        answerBtn.textContent = i + 1 + ". " + choice;
+        answerBtn.onclick = answerClick;
+        answersEl.appendChild(answerBtn);
+    });
 
+}
+
+function answerClick() {
+    if (this.value !== questions[questionIndex].answer) {
+      timeLeft -= 10;
+        if (timeLeft < 0) {
+          timeLeft = 0;
+        }
+        timerEl.textContent = timeLeft;
+        responseEL.textContent = `Wrong! The correct answer was ${questions[questionIndex].answer}.`;
+        responseEL.style.color = "red";
+      } else {
+        responseEL.textContent = "Correct!";
+        responseEL.style.color = "green";
+      }
+      responseEL.setAttribute("class", "response");
+      setTimeout(function() {
+        responseEL.setAttribute("class", "response hide");
+      }, 2000);
+      questionIndex++;
+      if (questionIndex === questions.length) {
+        gameOver();
+      } else {
+        generateQuestion();
+      }
+}
 
 function timer() {
     timeLeft--;
@@ -55,10 +104,32 @@ function timer() {
 
 
 function gameOver() {
-    clearInterval(timerId);
-    var endScreenEl = document.getElementById("quiz-end");
-    endScreenEl.removeAttribute("class");
-    var finalScoreEl = document.getElementById("score-final");
-    finalScoreEl.textContent = time;
+    clearInterval(timeLeft);
+    var gameOverScreen = document.getElementById("game-finished");
+    gameOverScreen.removeAttribute("class");
+    var finalScore = document.getElementById("finalScore");
+    finalScore.textContent = timeLeft;
     questionsEl.setAttribute("class", "hide");
+
 }
+
+function saveHighScore () {
+  var name = nameEl.value.trim();
+  if (name !== "") {
+    var highscores =
+      JSON.parse(window.localStorage.getItem("highscores")) || [];
+    var newScore = {
+      score: timeLeft,
+      name: name
+    };
+    highscores.push(newScore);
+    localStorage.setItem("highscores", JSON.stringify(highscores));
+
+  }
+}
+
+
+
+saveScoreBtn.onclick = saveHighScore;
+startBtn.onclick = startQuiz;
+
