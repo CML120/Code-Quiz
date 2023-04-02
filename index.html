@@ -18,11 +18,11 @@
 <body>
 
     <header>
-        <div>
+        <div class="mx-auto p-2">
             <a href="highscores.html">High Scores</a>
         </div>
 
-        <div class="timer">
+        <div class="timer p-4">
             <p>Time:
                 <span id="timer">0</span>
             </p>
@@ -31,17 +31,36 @@
     </header>
 
 
-    <main class="container my-5">
+    <main class="container my-5 justify-content-center">
 
-        <section >
+        <section>
             <div>
-
                 <h1>Coding Quiz Challenge</h1>
                 <p>
                     Try to answer the following code-related questions within the time limit. Keep in mind that
                     incorrect answers will penalize your score/time by ten seconds!
                 </p>
                 <button id="start" type="button" class="btn btn-primary">Start Quiz</button>
+            </div>
+        </section>
+
+
+
+        <section>
+            <div class="hide" id="questions">
+                <h2 id="question-text"></h2>
+                <div class="options" id="options"></div>
+            </div>
+        </section>
+
+        <section>
+            <div class="hide" id="done">
+                <h2>All Done!</h2>
+                <div class="options" id="options"></div>
+                <p>Your final score is: <span id="finalScore"></span></p>
+                <p>Please enter your name: <input type="text" id="name"/>
+                    <button id="submitScore">Submit Score</button>
+                </p>
             </div>
         </section>
 

@@ -2,3 +2,7 @@ body {
     font-family: 'Titillium Web', sans-serif;
     font-size: 16px;
   }
+
+  .timer{
+    float: right;
+  }
